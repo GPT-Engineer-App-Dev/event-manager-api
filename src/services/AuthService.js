@@ -42,4 +42,24 @@ const logout = () => {
   localStorage.removeItem("token");
 };
 
-export { register, login, isLoggedIn, logout };
+const getUserInfo = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    throw new Error("No token found");
+  }
+
+  const response = await fetch(`${API_BASE_URL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user info");
+  }
+
+  const data = await response.json();
+  return data;
+};
+
+export { register, login, isLoggedIn, logout, getUserInfo };
