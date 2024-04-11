@@ -29,7 +29,17 @@ const login = async (identifier, password) => {
     throw new Error("Login failed");
   }
 
-  return await response.json();
+  const data = await response.json();
+  localStorage.setItem("token", data.jwt);
+  return data;
 };
 
-export { register, login };
+const isLoggedIn = () => {
+  return !!localStorage.getItem("token");
+};
+
+const logout = () => {
+  localStorage.removeItem("token");
+};
+
+export { register, login, isLoggedIn, logout };
