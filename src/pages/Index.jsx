@@ -2,20 +2,38 @@ import { Box, Container, Flex, Heading, Text, VStack, Link } from "@chakra-ui/re
 
 import { Link as RouterLink } from "react-router-dom";
 
-const Header = () => (
-  <Box as="header" bg="blue.500" py={4}>
-    <Container maxW="container.lg">
-      <Flex justify="space-between" align="center">
-        <Heading as="h1" size="xl" color="white">
-          Event Manager
-        </Heading>
-        <Link as={RouterLink} to="/login" color="white">
-          Login
-        </Link>
-      </Flex>
-    </Container>
-  </Box>
-);
+import { useNavigate } from "react-router-dom";
+import { isLoggedIn, logout } from "../services/AuthService";
+
+const Header = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  return (
+    <Box as="header" bg="blue.500" py={4}>
+      <Container maxW="container.lg">
+        <Flex justify="space-between" align="center">
+          <Heading as="h1" size="xl" color="white">
+            Event Manager
+          </Heading>
+          {isLoggedIn() ? (
+            <Link onClick={handleLogout} color="white" cursor="pointer">
+              Logout
+            </Link>
+          ) : (
+            <Link as={RouterLink} to="/login" color="white">
+              Login
+            </Link>
+          )}
+        </Flex>
+      </Container>
+    </Box>
+  );
+};
 
 const MainContent = () => (
   <Container maxW="container.lg" py={8}>
