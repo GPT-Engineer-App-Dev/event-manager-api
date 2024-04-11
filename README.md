@@ -2,18 +2,11 @@
 
 Create a new Vite project using the Chakra UI template. Set up a basic responsive layout with:
 
-- A header with the app name "Event Manager" and a login/register button
-- A main content area 
-- A footer with a copyright notice
+- A header component with the app name "Event Manager"
+- A main content area component 
+- A footer component with a copyright notice
 
-Also create a folder structure for the auth pages and components:
-
-- src/pages/Login.jsx 
-- src/pages/Register.jsx
-- src/components/LoginForm.jsx
-- src/components/RegisterForm.jsx
-
-For now just put placeholder text in those files.
+Don't worry about any routing, pages, or extra folders yet. Just create the basic layout components in the existing file structure.
 
 ## Collaborate with GPT Engineer
 
