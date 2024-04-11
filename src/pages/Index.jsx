@@ -20,15 +20,9 @@ const Header = () => {
           <Heading as="h1" size="xl" color="white">
             Event Manager
           </Heading>
-          {isLoggedIn() ? (
-            <Link onClick={handleLogout} color="white" cursor="pointer">
-              Logout
-            </Link>
-          ) : (
-            <Link as={RouterLink} to="/login" color="white">
-              Login
-            </Link>
-          )}
+          <Link as={RouterLink} to="/login" color="white">
+            Login
+          </Link>
         </Flex>
       </Container>
     </Box>
