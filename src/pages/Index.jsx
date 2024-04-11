@@ -1,12 +1,12 @@
+import { useState, useEffect } from "react";
 import { Box, Container, Flex, Heading, Text, VStack, Link } from "@chakra-ui/react";
-
-import { Link as RouterLink } from "react-router-dom";
-
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { isLoggedIn, logout } from "../services/AuthService";
+import { fetchEvents } from "../services/EventService";
 
 const Header = () => {
   const navigate = useNavigate();
+  const authenticated = isLoggedIn();
 
   const handleLogout = () => {
     logout();
@@ -20,16 +20,29 @@ const Header = () => {
           <Heading as="h1" size="xl" color="white">
             Event Manager
           </Heading>
-          <Link as={RouterLink} to="/login" color="white">
-            Login
-          </Link>
+          <Flex>
+            {authenticated ? (
+              <>
+                <Link as={RouterLink} to="/profile" color="white" mr={4}>
+                  Profile
+                </Link>
+                <Link color="white" onClick={handleLogout}>
+                  Logout
+                </Link>
+              </>
+            ) : (
+              <Link as={RouterLink} to="/login" color="white">
+                Login
+              </Link>
+            )}
+          </Flex>
         </Flex>
       </Container>
     </Box>
   );
 };
 
-const MainContent = () => (
+const MainContent = ({ events, isAuthenticated }) => (
   <Container maxW="container.lg" py={8}>
     <VStack spacing={8} align="stretch">
       <Box bg="gray.50" p={4} rounded="md" shadow="md">
@@ -42,7 +55,23 @@ const MainContent = () => (
         <Heading as="h2" size="lg" mb={4}>
           Upcoming Events
         </Heading>
-        <Text>Praesent euismod, nulla sit amet aliquam lacinia, nisl nisl aliquam nisl, nec aliquam nisl nisl sit amet nisl.</Text>
+        {isAuthenticated ? (
+          events.length > 0 ? (
+            events.map((event) => (
+              <Box key={event.id} mb={4}>
+                <Heading as="h3" size="md">
+                  {event.attributes.title}
+                </Heading>
+                <Text>{event.attributes.description}</Text>
+                <Text>Date: {event.attributes.date}</Text>
+              </Box>
+            ))
+          ) : (
+            <Text>No events found.</Text>
+          )
+        ) : (
+          <Text>Please log in to view events.</Text>
+        )}
       </Box>
     </VStack>
   </Container>
@@ -57,10 +86,28 @@ const Footer = () => (
 );
 
 const Index = () => {
+  const [events, setEvents] = useState([]);
+  const isAuthenticated = isLoggedIn();
+
+  useEffect(() => {
+    const getEvents = async () => {
+      if (isAuthenticated) {
+        try {
+          const fetchedEvents = await fetchEvents();
+          setEvents(fetchedEvents);
+        } catch (error) {
+          console.error("Failed to fetch events:", error);
+        }
+      }
+    };
+
+    getEvents();
+  }, [isAuthenticated]);
+
   return (
     <Flex direction="column" minH="100vh">
       <Header />
-      <MainContent />
+      <MainContent events={events} isAuthenticated={isAuthenticated} />
       <Footer />
     </Flex>
   );
